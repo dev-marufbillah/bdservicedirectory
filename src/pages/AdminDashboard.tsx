@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { CATEGORIES } from '../data/mockData';
 import { PageTransition } from '../components/PageTransition';
 import {
-  ShieldCheck, Grid, CheckCircle2, AlertTriangle, Users,
+  Grid, CheckCircle2, AlertTriangle, Users,
   Plus, Trash2, ExternalLink, Search, BarChart3, ArrowLeft,
   X, Check, Key, UserCog, LogOut, UserPlus, Crown
 } from 'lucide-react';
@@ -18,7 +18,6 @@ export const AdminDashboard = () => {
     toggleVerifyService, resolveReport, deleteReport
   } = useServices();
 
-  // Security: Only Admin can access
   if (!user || user.role !== 'admin') {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white font-bengali px-4">
@@ -52,7 +51,6 @@ export const AdminDashboard = () => {
   const [passwordModal, setPasswordModal] = useState<{ id: string; name: string } | null>(null);
   const [newPassword, setNewPassword] = useState('');
 
-  // New Service Form State
   const [nameBn, setNameBn] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [slug, setSlug] = useState('');
@@ -61,7 +59,6 @@ export const AdminDashboard = () => {
   const [officialUrl, setOfficialUrl] = useState('');
   const [description, setDescription] = useState('');
 
-  // New User Form State
   const [newUserName, setNewUserName] = useState('');
   const [newUserIdentifier, setNewUserIdentifier] = useState('');
   const [newUserPass, setNewUserPass] = useState('');
@@ -482,7 +479,7 @@ export const AdminDashboard = () => {
                         <th className="p-3.5">নাম ও প্রোফাইল</th>
                         <th className="p-3.5">ইমেইল / মোবাইল</th>
                         <th className="p-3.5">বর্তমান রোল</th>
-                        <th className="p-3.5">অ্যাডমিন অ্যাকশন</th>
+                        <th className="p-3.5">অ্যাকশন</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-900 text-slate-300">
@@ -509,7 +506,6 @@ export const AdminDashboard = () => {
                           </td>
                           <td className="p-3.5">
                             <div className="flex items-center gap-2 flex-wrap">
-                              {/* Role Change Button */}
                               {u.id !== user.id && (
                                 <button
                                   onClick={() => {
@@ -535,16 +531,14 @@ export const AdminDashboard = () => {
                                 </button>
                               )}
 
-                              {/* Change Password */}
                               <button
                                 onClick={() => setPasswordModal({ id: u.id, name: u.name })}
-                                className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                                className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
                                 title="পাসওয়ার্ড রিসেট"
                               >
                                 <Key className="w-4 h-4" />
                               </button>
 
-                              {/* Delete User */}
                               {u.id !== user.id && (
                                 <button
                                   onClick={() => {
@@ -552,7 +546,7 @@ export const AdminDashboard = () => {
                                       deleteUser(u.id);
                                     }
                                   }}
-                                  className="p-1.5 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-400 transition"
+                                  className="p-1.5 rounded bg-rose-950 hover:bg-rose-900 text-rose-400 transition"
                                   title="মুছে ফেলুন"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -570,7 +564,7 @@ export const AdminDashboard = () => {
           )}
         </main>
 
-        {/* ========== ADD SERVICE MODAL ========== */}
+        {/* MODAL: ADD SERVICE */}
         {isAddModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-slate-900 text-slate-100 w-full max-w-lg rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
@@ -621,7 +615,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* ========== ADD USER/ADMIN MODAL ========== */}
+        {/* MODAL: ADD USER/ADMIN */}
         {isAddUserModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-slate-900 text-slate-100 w-full max-w-md rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-4">
@@ -668,7 +662,7 @@ export const AdminDashboard = () => {
           </div>
         )}
 
-        {/* ========== PASSWORD CHANGE MODAL ========== */}
+        {/* MODAL: PASSWORD CHANGE */}
         {passwordModal && (
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-slate-900 text-slate-100 w-full max-w-sm rounded-3xl p-6 border border-slate-800 shadow-2xl space-y-4">

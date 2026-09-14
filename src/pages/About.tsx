@@ -1,9 +1,8 @@
-import { Link } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { MobileBottomNav } from '../components/MobileBottomNav';
 import { PageTransition } from '../components/PageTransition';
-import { ShieldCheck, Target, Lock, ExternalLink, Building2, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Target, Lock, ExternalLink, CheckCircle2 } from 'lucide-react';
 
 export const About = () => {
   return (
@@ -17,9 +16,9 @@ export const About = () => {
             <span className="bg-white/10 text-emerald-200 text-xs font-bold px-3.5 py-1 rounded-full border border-white/20">
               আমাদের লক্ষ্য ও সততা
             </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold">একসেবা বাংলাদেশ সম্পর্কে</h1>
+            <h1 className="text-3xl sm:text-4xl font-extrabold">বাংলাদেশ সার্ভিস ডিরেক্টরি সম্পর্কে</h1>
             <p className="text-xs sm:text-sm text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-              একসেবা বাংলাদেশ একটি স্বাধীন সেবা গেটওয়ে যা বাংলাদেশী নাগরিকদের সহজেই সঠিক ও ভেরিফায়েড সরকারি ওয়েবসাইট খুঁজে পেতে সাহায্য করে।
+              বাংলাদেশ সার্ভিস ডিরেক্টরি একটি স্বাধীন সেবা গেটওয়ে যা বাংলাদেশী নাগরিকদের সহজেই সঠিক ও ভেরিফায়েড সরকারি ওয়েবসাইট খুঁজে পেতে সাহায্য করে।
             </p>
           </div>
         </div>
@@ -30,10 +29,10 @@ export const About = () => {
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-xl font-bold text-[#006A4E] flex items-center gap-2">
               <Target className="w-6 h-6" />
-              <span>আমাদের মূল উদ্দেশ্যে</span>
+              <span>আমাদের মূল উদ্দেশ্য</span>
             </h2>
             <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-              ইন্টারনেটে হাজার হাজার ভুয়া ওয়েবসাইট ও দালালদের বিভ্রান্তির কারণে অনেক সময় সাধারণ নাগরিকরা সঠিক সরকারি সাইট খুঁজে পান না। <strong>একসেবা বাংলাদেশ</strong> প্ল্যাটফর্মের একমাত্র কাজ হলো নাগরিকদের ঝামেলামুক্তভাবে ১ ক্লিক-এ বিশ্বস্ত সরকারি কর্তৃপক্ষের Official Website-এ পৌঁছে দেওয়া।
+              ইন্টারনেটে হাজার হাজার ভুয়া ওয়েবসাইট ও দালালদের বিভ্রান্তির কারণে অনেক সময় সাধারণ নাগরিকরা সঠিক সরকারি সাইট খুঁজে পান না। <strong>বাংলাদেশ সার্ভিস ডিরেক্টরি</strong> প্ল্যাটফর্মের একমাত্র কাজ হলো নাগরিকদের ঝামেলামুক্তভাবে ১ ক্লিকে বিশ্বস্ত সরকারি কর্তৃপক্ষের Official Website-এ পৌঁছে দেওয়া।
             </p>
           </div>
 
@@ -71,7 +70,7 @@ export const About = () => {
               <span>আইনি ও স্পষ্ট ঘোষণা (Legal Disclaimer)</span>
             </h3>
             <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-              একসেবা বাংলাদেশ একটি স্বাধীন সেবা নির্দেশিকা ও Gateway। আমরা কোনো সরকারি সেবা প্রদান বা সরকারি আবেদন প্রক্রিয়া পরিচালনা করি না। ব্যবহারকারীকে সংশ্লিষ্ট সরকারি প্রতিষ্ঠানের Official Website-এ পৌঁছে দেওয়া হয়।
+              বাংলাদেশ সার্ভিস ডিরেক্টরি একটি স্বাধীন সরকারি সেবা নির্দেশিকা ও Gateway। আমরা কোনো সরকারি সেবা প্রদান বা সরকারি আবেদন প্রক্রিয়া পরিচালনা করি না। ব্যবহারকারীকে সংশ্লিষ্ট সরকারি প্রতিষ্ঠানের Official Website-এ পৌঁছে দেওয়া হয়।
             </p>
           </div>
 
