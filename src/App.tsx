@@ -2,11 +2,9 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 
-import { LanguageProvider } from './context/LanguageContext';
 import { ServiceProvider } from './context/ServiceContext';
-import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { SEOHandler } from './components/SEOHandler';
-import { LoginPromptModal } from './components/LoginPromptModal';
 
 import { Home } from './pages/Home';
 import { AllCategories } from './pages/AllCategories';
@@ -18,9 +16,6 @@ import { Help } from './pages/Help';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
 import { ReportBrokenLink } from './pages/ReportBrokenLink';
-import { Login } from './pages/Login';
-import { Profile } from './pages/Profile';
-import { AdminDashboard } from './pages/AdminDashboard';
 import { NotFound } from './pages/NotFound';
 
 function AnimatedRoutes() {
@@ -43,9 +38,6 @@ function AnimatedRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/report-broken-link" element={<ReportBrokenLink />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
@@ -55,15 +47,12 @@ function AnimatedRoutes() {
 export function App() {
   return (
     <LanguageProvider>
-      <AuthProvider>
-        <ServiceProvider>
-          <BrowserRouter>
-            <SEOHandler />
-            <AnimatedRoutes />
-            <LoginPromptModal />
-          </BrowserRouter>
-        </ServiceProvider>
-      </AuthProvider>
+      <ServiceProvider>
+        <BrowserRouter>
+          <SEOHandler />
+          <AnimatedRoutes />
+        </BrowserRouter>
+      </ServiceProvider>
     </LanguageProvider>
   );
 }
