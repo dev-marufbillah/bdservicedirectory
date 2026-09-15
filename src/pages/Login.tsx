@@ -8,7 +8,8 @@ import { PageTransition } from '../components/PageTransition';
 import { Phone, Lock, Eye, EyeOff, LogIn, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 export const Login = () => {
-  const { login, register, pendingOTP, verifyOTP, cancelOTP, user } = useAuth();
+  // Fixed: Removed unused 'user' variable to clear TS warning
+  const { login, register, pendingOTP, verifyOTP, cancelOTP } = useAuth();
   const navigate = useNavigate();
 
   const [isRegister, setIsRegister] = useState(false);
@@ -36,10 +37,8 @@ export const Login = () => {
     } else {
       const res = login(identifier, password);
       if (res.success) {
-        // লগইনের পর role অনুযায়ী রিডাইরেক্ট — user state একটু পরে আপডেট হয়
         const id = identifier.trim().toLowerCase();
-        const isOwner =
-          id === '01302393194' || id === 'marufsalauddinoffical@gmail.com';
+        const isOwner = id === '01302393194' || id === 'marufsalauddinoffical@gmail.com';
         navigate(isOwner ? '/admin' : '/');
       } else {
         setErrorMsg(res.message);

@@ -32,33 +32,29 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USERS_DB_KEY = 'eksheba_users_db_v6_maruf';
-const CURRENT_USER_KEY = 'eksheba_current_user_v6_maruf';
-const VISIT_COUNT_KEY = 'eksheba_visit_count_v6_maruf';
+// Updated Cache Key v7 to FORCE refresh browser data with Maruf Salauddin Super Admin
+const USERS_DB_KEY = 'eksheba_users_db_v7_maruf_final';
+const CURRENT_USER_KEY = 'eksheba_current_user_v7_maruf_final';
+const VISIT_COUNT_KEY = 'eksheba_visit_count_v7_maruf_final';
 
-// ========== আপনার সুপার অ্যাডমিন (শুধু আপনি) ==========
+// ========== সুপার অ্যাডমিন (Maruf Salauddin) ==========
 export const OWNER_SUPER_ADMIN_PHONE = '01302393194';
 export const OWNER_SUPER_ADMIN_EMAIL = 'marufsalauddinoffical@gmail.com';
 export const OWNER_SUPER_ADMIN_NAME = 'Maruf Salauddin';
-export const OWNER_SUPER_ADMIN_PASSWORD = 'admin'; // চাইলে পরে পরিবর্তন করুন
+export const OWNER_SUPER_ADMIN_PASSWORD = 'admin';
 
-export const isBDPhone = (str: string) =>
-  /^(013|014|015|016|017|018|019)\d{8}$/.test(str.trim());
-export const isValidEmail = (str: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str.trim());
+export const isBDPhone = (str: string) => /^(013|014|015|016|017|018|019)\d{8}$/.test(str.trim());
+export const isValidEmail = (str: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str.trim());
 
 const isOwnerIdentifier = (id: string) => {
   const c = id.trim().toLowerCase();
-  return (
-    c === OWNER_SUPER_ADMIN_PHONE.toLowerCase() ||
-    c === OWNER_SUPER_ADMIN_EMAIL.toLowerCase()
-  );
+  return c === OWNER_SUPER_ADMIN_PHONE.toLowerCase() || c === OWNER_SUPER_ADMIN_EMAIL.toLowerCase();
 };
 
 const defaultUsers: User[] = [
   {
     id: 'super-admin-phone',
-    name: OWNER_SUPER_ADMIN_NAME,
+    name: `${OWNER_SUPER_ADMIN_NAME} (Super Admin)`,
     identifier: OWNER_SUPER_ADMIN_PHONE,
     identifierType: 'phone',
     password: OWNER_SUPER_ADMIN_PASSWORD,
@@ -68,7 +64,7 @@ const defaultUsers: User[] = [
   },
   {
     id: 'super-admin-email',
-    name: OWNER_SUPER_ADMIN_NAME,
+    name: `${OWNER_SUPER_ADMIN_NAME} (Official Email)`,
     identifier: OWNER_SUPER_ADMIN_EMAIL,
     identifierType: 'email',
     password: OWNER_SUPER_ADMIN_PASSWORD,
@@ -76,6 +72,16 @@ const defaultUsers: User[] = [
     isVerified: true,
     createdAt: '২০২৫-০১-০১',
   },
+  {
+    id: 'usr-citizen-demo',
+    name: 'আরিফুল ইসলাম (নাগরিক)',
+    identifier: '01812345678',
+    identifierType: 'phone',
+    password: '123',
+    role: 'citizen',
+    isVerified: true,
+    createdAt: '২০২৫-০২-১৫',
+  }
 ];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -90,12 +96,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const [pendingOTP, setPendingOTP] = useState<{
-    identifier: string;
-    code: string;
-    name: string;
-    pass: string;
-  } | null>(null);
+  const [pendingOTP, setPendingOTP] = useState<{ identifier: string; code: string; name: string; pass: string } | null>(null);
 
   useEffect(() => {
     localStorage.setItem(USERS_DB_KEY, JSON.stringify(users));
@@ -122,19 +123,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const email = isValidEmail(cleanId);
 
     if (!phone && !email) {
-      return {
-        success: false,
-        code: '',
-        message: 'সঠিক ১১ ডিজিটের বাংলাদেশি নম্বর (013...) অথবা ইমেইল দিন।',
-      };
+      return { success: false, code: '', message: 'সঠিক ১১ ডিজিটের বাংলাদেশি নম্বর (013...) অথবা ইমেইল দিন।' };
     }
 
     if (users.some((u) => u.identifier.toLowerCase() === cleanId.toLowerCase())) {
-      return {
-        success: false,
-        code: '',
-        message: 'এই নম্বর/ইমেইল দিয়ে অ্যাকাউন্ট আছে! লগইন করুন।',
-      };
+      return { success: false, code: '', message: 'এই নম্বর/ইমেইল দিয়ে অ্যাকাউন্ট আছে! লগইন করুন।' };
     }
 
     const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -143,9 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return {
       success: true,
       code,
-      message: phone
-        ? `মোবাইল ${cleanId} এ ওটিপি পাঠানো হয়েছে।`
-        : `ইমেইল ${cleanId} এ ওটিপি পাঠানো হয়েছে।`,
+      message: phone ? `মোবাইল ${cleanId} এ ওটিপি পাঠানো হয়েছে।` : `ইমেইল ${cleanId} এ ওটিপি পাঠানো হয়েছে।`,
     };
   };
 
@@ -154,10 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (pendingOTP.code !== inputCode.trim()) return false;
 
     const phone = isBDPhone(pendingOTP.identifier);
-    // পাবলিক রেজিস্ট্রেশন = সবসময় citizen (owner হলে admin)
-    const role: 'citizen' | 'admin' = isOwnerIdentifier(pendingOTP.identifier)
-      ? 'admin'
-      : 'citizen';
+    const role: 'citizen' | 'admin' = isOwnerIdentifier(pendingOTP.identifier) ? 'admin' : 'citizen';
 
     const newUser: User = {
       id: `usr-${Date.now()}`,
@@ -200,17 +188,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => setUser(null);
 
-  const addUserByAdmin = (
-    name: string,
-    identifier: string,
-    password: string,
-    role: 'citizen' | 'admin'
-  ) => {
+  const addUserByAdmin = (name: string, identifier: string, password: string, role: 'citizen' | 'admin') => {
     const cleanId = identifier.trim();
-    if (users.some((u) => u.identifier.toLowerCase() === cleanId.toLowerCase()))
-      return false;
+    if (users.some((u) => u.identifier.toLowerCase() === cleanId.toLowerCase())) return false;
     const phone = isBDPhone(cleanId);
-    if (!phone && !isValidEmail(cleanId)) return false;
 
     setUsers((prev) => [
       ...prev,
@@ -234,9 +215,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const toggleUserVerification = (id: string) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, isVerified: !u.isVerified } : u))
-    );
+    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, isVerified: !u.isVerified } : u)));
   };
 
   const deleteUser = (id: string) => {
@@ -244,32 +223,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const changeUserPassword = (id: string, newPass: string) => {
-    setUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, password: newPass } : u))
-    );
+    setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, password: newPass } : u)));
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        users,
-        register,
-        login,
-        logout,
-        showLoginPrompt,
-        setShowLoginPrompt,
-        pendingOTP,
-        sendOTP,
-        verifyOTP,
-        cancelOTP,
-        addUserByAdmin,
-        changeUserRole,
-        toggleUserVerification,
-        deleteUser,
-        changeUserPassword,
-      }}
-    >
+    <AuthContext.Provider value={{
+      user, users, register, login, logout,
+      showLoginPrompt, setShowLoginPrompt,
+      pendingOTP, sendOTP, verifyOTP, cancelOTP,
+      addUserByAdmin, changeUserRole, toggleUserVerification, deleteUser, changeUserPassword
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -277,6 +240,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be inside AuthProvider');
+  if (!ctx) throw new Error('useAuth error');
   return ctx;
 };
