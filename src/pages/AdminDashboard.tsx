@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { CATEGORIES } from '../data/mockData';
 import { PageTransition } from '../components/PageTransition';
 import {
-   Grid, CheckCircle2, AlertTriangle, Users,
+  ShieldCheck, Grid, CheckCircle2, AlertTriangle, Users,
   Plus, Trash2, ExternalLink, Search, BarChart3, ArrowLeft,
   X, Check, Key, UserCog, LogOut, UserPlus, Crown, Phone, Mail, BadgeCheck, Lock
 } from 'lucide-react';
@@ -47,13 +47,13 @@ export const AdminDashboard = () => {
 
   const [activeTab, setActiveTab] = useState<'overview' | 'services' | 'reports' | 'users'>('overview');
   const [searchTerm, setSearchTerm] = useState('');
-  const [userFilter, setUserFilter] = useState<'all' | 'phone' | 'email'>('all');
+  const [userRoleFilter, setUserRoleFilter] = useState<'all' | 'admin' | 'citizen'>('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
   const [passwordModal, setPasswordModal] = useState<{ id: string; name: string } | null>(null);
   const [newPassword, setNewPassword] = useState('');
 
-  // Form States
+  // Service Form States
   const [nameBn, setNameBn] = useState('');
   const [nameEn, setNameEn] = useState('');
   const [slug, setSlug] = useState('');
@@ -62,6 +62,7 @@ export const AdminDashboard = () => {
   const [officialUrl, setOfficialUrl] = useState('');
   const [description, setDescription] = useState('');
 
+  // User Form States
   const [newUserName, setNewUserName] = useState('');
   const [newUserIdentifier, setNewUserIdentifier] = useState('');
   const [newUserPass, setNewUserPass] = useState('');
@@ -81,8 +82,8 @@ export const AdminDashboard = () => {
   );
 
   const filteredUsers = users.filter(u => {
-    if (userFilter === 'phone') return u.identifierType === 'phone';
-    if (userFilter === 'email') return u.identifierType === 'email';
+    if (userRoleFilter === 'admin') return u.role === 'admin';
+    if (userRoleFilter === 'citizen') return u.role === 'citizen';
     return true;
   });
 
@@ -142,7 +143,7 @@ export const AdminDashboard = () => {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-[#006A4E] flex items-center justify-center font-bold text-white shadow-md">
-                🛡️
+                <ShieldCheck className="w-5 h-5 text-emerald-300" />
               </div>
               <div>
                 <h2 className="font-extrabold text-base text-white">প্রাইভেট ড্যাশবোর্ড</h2>
@@ -192,7 +193,7 @@ export const AdminDashboard = () => {
             <div>
               <h1 className="text-2xl font-extrabold text-white">অ্যাডমিন কন্ট্রোল প্যানেল</h1>
               <p className="text-xs text-slate-400 mt-1">
-                স্বাগতম, <span className="text-emerald-400 font-bold">{user.name}</span> — রিয়েল ইউজার ও লজিস্টিক কন্ট্রোল
+                সুপার অ্যাডমিন: <span className="text-emerald-400 font-bold">{user.name}</span> ({user.identifier})
               </p>
             </div>
 
@@ -241,7 +242,7 @@ export const AdminDashboard = () => {
 
               {/* Quick Table View */}
               <div className="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-4">
-                <h3 className="font-bold text-base text-white">সর্বশেষ ভেরিফায়েড সেবাসমূহ</h3>
+                <h3 className="font-bold text-base text-white">সর্বশেষ সেবাসমূহ</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-900 text-slate-400 uppercase font-semibold">
@@ -361,144 +362,159 @@ export const AdminDashboard = () => {
             </div>
           )}
 
-          {/* USERS TAB */}
+          {/* USERS & ADMIN TAB (CLEAR SEPARATION) */}
           {activeTab === 'users' && (
-            <div className="space-y-4">
-              <div className="bg-slate-950 rounded-2xl border border-slate-800 p-6">
-                
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+            <div className="space-y-6">
+              
+              {/* Header & Filter Controls */}
+              <div className="bg-slate-950 rounded-2xl border border-slate-800 p-6 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
                   <div>
                     <h3 className="font-bold text-base text-white flex items-center gap-2">
                       <UserCog className="w-5 h-5 text-emerald-400" />
-                      ইউজার ও প্রাইভেট অ্যাডমিন প্যানেল
+                      ইউজার ও অ্যাডমিন ম্যানেজমেন্ট
                     </h3>
                     <p className="text-xs text-slate-400 mt-1">
-                      মোবাইল নম্বর ও ইমেইল নিবন্ধিত অরিজিনাল ইউজার অ্যাকাউন্ট ট্র্যাকিং
+                      সুপার অ্যাডমিন <strong className="text-emerald-400">Maruf Salauddin</strong> দ্বারা নিয়ন্ত্রিত
                     </p>
                   </div>
 
+                  {/* Filter Pills */}
                   <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold">
-                    <button onClick={() => setUserFilter('all')} className={`px-3 py-1.5 rounded-lg transition ${userFilter === 'all' ? 'bg-[#006A4E] text-white' : 'text-slate-400 hover:text-white'}`}>
+                    <button onClick={() => setUserRoleFilter('all')} className={`px-3 py-1.5 rounded-lg transition ${userRoleFilter === 'all' ? 'bg-[#006A4E] text-white font-bold' : 'text-slate-400 hover:text-white'}`}>
                       সবাই ({users.length})
                     </button>
-                    <button onClick={() => setUserFilter('phone')} className={`px-3 py-1.5 rounded-lg transition ${userFilter === 'phone' ? 'bg-[#006A4E] text-white' : 'text-slate-400 hover:text-white'}`}>
-                      📱 মোবাইল
+                    <button onClick={() => setUserRoleFilter('admin')} className={`px-3 py-1.5 rounded-lg transition ${userRoleFilter === 'admin' ? 'bg-amber-600 text-white font-bold' : 'text-slate-400 hover:text-white'}`}>
+                      👑 অ্যাডমিন ({adminCount})
                     </button>
-                    <button onClick={() => setUserFilter('email')} className={`px-3 py-1.5 rounded-lg transition ${userFilter === 'email' ? 'bg-[#006A4E] text-white' : 'text-slate-400 hover:text-white'}`}>
-                      ✉️ ইমেইল
+                    <button onClick={() => setUserRoleFilter('citizen')} className={`px-3 py-1.5 rounded-lg transition ${userRoleFilter === 'citizen' ? 'bg-blue-600 text-white font-bold' : 'text-slate-400 hover:text-white'}`}>
+                      👤 নাগরিক ({citizenCount})
                     </button>
                   </div>
                 </div>
 
+                {/* User Table */}
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-900 text-slate-400 uppercase font-semibold">
                       <tr>
-                        <th className="p-3.5">নাম ও প্রোফাইল</th>
-                        <th className="p-3.5">অরিজিনাল মোবাইল / ইমেইল</th>
+                        <th className="p-3.5">নাম ও পরিচিতি</th>
+                        <th className="p-3.5">মোবাইল / ইমেইল</th>
                         <th className="p-3.5">ভেরিফিকেশন</th>
-                        <th className="p-3.5">রোল</th>
+                        <th className="p-3.5">অ্যাকাউন্ট রোল</th>
                         <th className="p-3.5">অ্যাকশন</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-900 text-slate-300">
-                      {filteredUsers.map((u) => (
-                        <tr key={u.id} className="hover:bg-slate-900/50">
-                          <td className="p-3.5">
-                            <div className="flex items-center gap-2.5">
-                              <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-md ${u.role === 'admin' ? 'bg-amber-600' : 'bg-[#006A4E]'}`}>
-                                {u.role === 'admin' ? '👑' : u.name.charAt(0)}
+                      {filteredUsers.map((u) => {
+                        const isOwner = u.identifier === '01302393194' || u.identifier === 'marufsalauddinoffical@gmail.com';
+                        return (
+                          <tr key={u.id} className="hover:bg-slate-900/50">
+                            <td className="p-3.5">
+                              <div className="flex items-center gap-2.5">
+                                <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-sm shadow-md ${u.role === 'admin' ? 'bg-amber-600' : 'bg-[#006A4E]'}`}>
+                                  {u.role === 'admin' ? '👑' : u.name.charAt(0)}
+                                </div>
+                                <div>
+                                  <span className="font-bold text-white block flex items-center gap-1.5">
+                                    {u.name}
+                                    {isOwner && (
+                                      <span className="bg-amber-500/20 text-amber-300 text-[9px] px-2 py-0.5 rounded-full border border-amber-500/40 font-bold">
+                                        Owner
+                                      </span>
+                                    )}
+                                  </span>
+                                  <span className="text-[10px] text-slate-500 font-mono">তারিখ: {u.createdAt}</span>
+                                </div>
                               </div>
-                              <div>
-                                <span className="font-bold text-white block">{u.name}</span>
-                                <span className="text-[10px] text-slate-500 font-mono">আইডি: {u.id}</span>
+                            </td>
+
+                            <td className="p-3.5">
+                              <div className="flex items-center gap-2 font-mono">
+                                {u.identifierType === 'phone' ? (
+                                  <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                                ) : (
+                                  <Mail className="w-3.5 h-3.5 text-blue-400" />
+                                )}
+                                <span className="font-bold text-slate-200">{u.identifier}</span>
                               </div>
-                            </div>
-                          </td>
+                            </td>
 
-                          <td className="p-3.5">
-                            <div className="flex items-center gap-2 font-mono">
-                              {u.identifierType === 'phone' ? (
-                                <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                              ) : (
-                                <Mail className="w-3.5 h-3.5 text-blue-400" />
-                              )}
-                              <span className="font-bold text-slate-200">{u.identifier}</span>
-                            </div>
-                          </td>
-
-                          <td className="p-3.5">
-                            <button 
-                              onClick={() => toggleUserVerification(u.id)}
-                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border transition ${
-                                u.isVerified 
-                                  ? 'bg-emerald-950 text-emerald-400 border-emerald-800' 
-                                  : 'bg-amber-950 text-amber-400 border-amber-800'
-                              }`}
-                            >
-                              <BadgeCheck className="w-3 h-3" />
-                              <span>{u.isVerified ? 'ভেরিফায়েড' : 'আনভেরিফায়েড'}</span>
-                            </button>
-                          </td>
-
-                          <td className="p-3.5">
-                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${u.role === 'admin' ? 'bg-amber-950 text-amber-300 border-amber-800' : 'bg-slate-800 text-slate-300 border-slate-700'}`}>
-                              {u.role === 'admin' ? '👑 Admin' : '👤 Citizen'}
-                            </span>
-                          </td>
-
-                          <td className="p-3.5">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {u.id !== user.id && (
-                                <button
-                                  onClick={() => {
-                                    const newRole = u.role === 'admin' ? 'citizen' : 'admin';
-                                    if (confirm(`আপনি কি "${u.name}" কে ${newRole === 'admin' ? 'অ্যাডমিন' : 'নাগরিক ইউজার'} বানাতে চান?`)) {
-                                      changeUserRole(u.id, newRole);
-                                    }
-                                  }}
-                                  className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1 shadow-sm ${
-                                    u.role === 'citizen'
-                                      ? 'bg-amber-500 hover:bg-amber-600 text-slate-950'
-                                      : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                                  }`}
-                                >
-                                  {u.role === 'citizen' ? (
-                                    <>
-                                      <Crown className="w-3.5 h-3.5" />
-                                      <span>👑 অ্যাডমিন করুন</span>
-                                    </>
-                                  ) : (
-                                    <span>👤 সাধারণ ইউজার করুন</span>
-                                  )}
-                                </button>
-                              )}
-
-                              <button
-                                onClick={() => setPasswordModal({ id: u.id, name: u.name })}
-                                className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
-                                title="পাসওয়ার্ড রিসেট"
+                            <td className="p-3.5">
+                              <button 
+                                onClick={() => toggleUserVerification(u.id)}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold border transition ${
+                                  u.isVerified 
+                                    ? 'bg-emerald-950 text-emerald-400 border-emerald-800' 
+                                    : 'bg-amber-950 text-amber-400 border-amber-800'
+                                }`}
                               >
-                                <Key className="w-4 h-4" />
+                                <BadgeCheck className="w-3 h-3" />
+                                <span>{u.isVerified ? 'ভেরিফায়েড' : 'আনভেরিফায়েড'}</span>
                               </button>
+                            </td>
 
-                              {u.id !== user.id && (
+                            <td className="p-3.5">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${u.role === 'admin' ? 'bg-amber-950 text-amber-300 border-amber-800' : 'bg-slate-800 text-slate-300 border-slate-700'}`}>
+                                {u.role === 'admin' ? '👑 Admin' : '👤 Citizen'}
+                              </span>
+                            </td>
+
+                            <td className="p-3.5">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                {/* Role Change Button — Owner cannot be demoted */}
+                                {!isOwner && (
+                                  <button
+                                    onClick={() => {
+                                      const newRole = u.role === 'admin' ? 'citizen' : 'admin';
+                                      if (confirm(`আপনি কি "${u.name}" কে ${newRole === 'admin' ? 'অ্যাডমিন' : 'নাগরিক ইউজার'} বানাতে চান?`)) {
+                                        changeUserRole(u.id, newRole);
+                                      }
+                                    }}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition flex items-center gap-1 shadow-sm ${
+                                      u.role === 'citizen'
+                                        ? 'bg-amber-500 hover:bg-amber-600 text-slate-950'
+                                        : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                                    }`}
+                                  >
+                                    {u.role === 'citizen' ? (
+                                      <>
+                                        <Crown className="w-3.5 h-3.5" />
+                                        <span>👑 অ্যাডমিন করুন</span>
+                                      </>
+                                    ) : (
+                                      <span>👤 নাগরিক করুন</span>
+                                    )}
+                                  </button>
+                                )}
+
                                 <button
-                                  onClick={() => {
-                                    if (confirm(`"${u.name}" অ্যাকাউন্টটি মুছে ফেলতে চান?`)) {
-                                      deleteUser(u.id);
-                                    }
-                                  }}
-                                  className="p-1.5 rounded bg-rose-950 hover:bg-rose-900 text-rose-400 transition"
-                                  title="মুছে ফেলুন"
+                                  onClick={() => setPasswordModal({ id: u.id, name: u.name })}
+                                  className="p-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                                  title="পাসওয়ার্ড রিসেট"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Key className="w-4 h-4" />
                                 </button>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+
+                                {/* Owner cannot be deleted */}
+                                {!isOwner && (
+                                  <button
+                                    onClick={() => {
+                                      if (confirm(`"${u.name}" অ্যাকাউন্টটি মুছে ফেলতে চান?`)) {
+                                        deleteUser(u.id);
+                                      }
+                                    }}
+                                    className="p-1.5 rounded bg-rose-950 hover:bg-rose-900 text-rose-400 transition"
+                                    title="মুছে ফেলুন"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -580,7 +596,7 @@ export const AdminDashboard = () => {
 
                 <div>
                   <label className="block font-semibold text-slate-300 mb-1">অরিজিনাল মোবাইল নম্বর বা ইমেইল *</label>
-                  <input type="text" required value={newUserIdentifier} onChange={e => setNewUserIdentifier(e.target.value)} placeholder="017XXXXXXXX অথবা user@gmail.com" className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-[#006A4E]" />
+                  <input type="text" required value={newUserIdentifier} onChange={e => setNewUserIdentifier(e.target.value)} placeholder="01302393194 অথবা marufsalauddinoffical@gmail.com" className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-[#006A4E]" />
                 </div>
 
                 <div>
